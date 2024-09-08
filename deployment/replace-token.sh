@@ -22,9 +22,13 @@ do
         kubectl apply -f modified.yaml
 done
 
+
+rm work.yaml modified.yaml
+
 ## Restart Pod
 for i in $(kubectl get deploy -nmvd |awk 'NR>1{print $1}')
 do
 	kubectl rollout restart deployment $i -n$NS
 done
+
 
