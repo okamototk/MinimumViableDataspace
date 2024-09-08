@@ -49,3 +49,26 @@ resource "kubernetes_namespace" "ns" {
     name = "mvd"
   }
 }
+
+resource "kubernetes_config_map" "vault-init-script" {
+  metadata {
+    namespace = "mvd"
+    name = "vault-init-script"
+  }
+
+  data = {
+#    "init-unseal.sh" = "${file("${path.module}/init-unseal.sh")}"
+    "init-unseal.sh" = "${file("init-unseal.sh")}"
+  }
+}
+
+
+resource "null_resource" "post_deploy" {
+  provisioner "local-exec" {
+    command = "./replace-token.sh"
+  }
+
+  triggers = {
+    always_run = "${timestamp()}"
+  }
+}
