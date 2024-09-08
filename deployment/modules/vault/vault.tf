@@ -30,7 +30,7 @@ resource "helm_release" "vault" {
   }
   set {
     name  = "server.dev.enabled"
-    value = true
+    value = false
   }
 
   set {
@@ -66,3 +66,15 @@ resource "tls_private_key" "private_signing_key" {
   algorithm   = "ECDSA"
   ecdsa_curve = "P256"
 }
+
+resource "kubernetes_config_map" "vault-init-script" {
+  metadata {
+    namespace = var.namespace
+    name = "vault-init-script"
+  }
+
+  data = {
+    "init-unseal.sh" = "${file("${path.module}/init-unseal.sh")}"
+  }
+}
+

@@ -12,7 +12,15 @@
 #
 
 server:
+  readinessProbe:
+    enabled: false
   postStart:
+    - sh
+    - /vault/userconfig/vault-init-script/init-unseal.sh
+  extraVolumes:
+    - type: configMap
+      name: vault-init-script
+      path: /vault/userconfig
 hashicorp:
   timeout: 30
   healthCheck:
